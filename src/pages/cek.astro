@@ -22,25 +22,31 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
   <p class="lead">Jawab untuk ponsel ini. Hasilnya hanya menunjukkan hal yang belum.</p>
   <p>Jawaban tinggal di peramban ponsel ini. Situs ini tidak menerima jawaban itu.</p>
 
-  <form id="cek-form">
+  <form id="cek-form" class="q-grid">
     {
       questions.map((question, index) => (
         <fieldset>
-          <legend>
+          <legend class="sr-only">
             {index + 1}. {question.check}
           </legend>
-          <label class="choice">
-            <input type="radio" name={question.id} value="sudah" />
-            Sudah
-          </label>
-          <label class="choice">
-            <input type="radio" name={question.id} value="belum" />
-            Belum
-          </label>
-          <label class="choice">
-            <input type="radio" name={question.id} value="na" />
-            Tidak berlaku
-          </label>
+          <p class="q-label" aria-hidden="true">
+            <span class="q-no">{index + 1}</span>
+            <span>{question.check}</span>
+          </p>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name={question.id} value="sudah" />
+              Sudah
+            </label>
+            <label class="choice">
+              <input type="radio" name={question.id} value="belum" />
+              Belum
+            </label>
+            <label class="choice">
+              <input type="radio" name={question.id} value="na" />
+              Tidak berlaku
+            </label>
+          </div>
         </fieldset>
       ))
     }
