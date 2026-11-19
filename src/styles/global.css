@@ -194,8 +194,86 @@ p {
 
 .hero {
   display: grid;
-  gap: var(--space-5);
+  gap: 0.7rem;
   padding: 0.75rem 0 0.25rem;
+}
+
+.hero p {
+  margin: 0;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.answer-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--tile-line, var(--line));
+  background: var(--tile, var(--card));
+  padding: 1.15rem 1.15rem 0.35rem;
+  box-shadow: var(--shadow);
+}
+
+.answer-personal {
+  --tile: #ddf6e8;
+  --tile-line: #b7e6cc;
+  --mark: #0e7a4f;
+}
+
+.answer-org {
+  --tile: #d9f6f3;
+  --tile-line: #b7e4df;
+  --mark: #0e6e68;
+}
+
+.answer-title {
+  font-family: var(--font-display);
+  font-weight: 560;
+  font-variation-settings: "SOFT" 40, "WONK" 0, "opsz" 72, "wght" 560;
+  font-size: clamp(1.85rem, 2vw + 0.8rem, 2.45rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0 0 0.45rem;
+}
+
+.answer-line {
+  margin: 0;
+  max-width: 36rem;
+  line-height: 1.4;
+}
+
+.answer-steps {
+  list-style: none;
+  margin: auto 0 0;
+  padding: 0.85rem 0 0;
+}
+
+.answer-steps li {
+  margin: 0;
+}
+
+.answer-steps a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  min-height: 48px;
+  padding: 0.85rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--mark) 28%, transparent);
+  color: var(--ink);
+  font-weight: 650;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.answer-card .step-no {
+  color: var(--mark);
 }
 
 .hero h1 {
@@ -695,13 +773,15 @@ fieldset {
   .hero {
     padding-top: 1.25rem;
   }
+
+  .answer-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
 }
 
 @media (min-width: 64rem) {
   .hero {
-    grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 0.72fr);
-    gap: 2.5rem;
-    align-items: end;
     padding-top: 1.75rem;
   }
 
