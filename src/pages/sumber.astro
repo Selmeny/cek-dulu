@@ -7,30 +7,32 @@ import { sourceList } from "../data/sources";
   title="Sumber"
   description="Daftar dokumen yang dipakai situs ini, dan batas pemakaiannya."
 >
-  <h1>Sumber</h1>
-  <p class="lead">
-    Setiap tindakan di situs ini punya dasar. NIST dan ISO adalah praktik baik. Keduanya bukan hukum Indonesia.
-  </p>
+  <div class="prose">
+    <h1>Sumber</h1>
+    <p class="lead">
+      Setiap tindakan di situs ini punya dasar. NIST dan ISO adalah praktik baik. Keduanya bukan hukum Indonesia.
+    </p>
 
-  <h2>Hukum Indonesia yang dipakai</h2>
-  <p>
-    Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi berlaku bagi orang yang menentukan tujuan penyimpanan data orang lain. Pasal 2 ayat (2) mengecualikan kegiatan pribadi atau rumah tangga. Pasal 35 mewajibkan pengamanan. Pasal 46 ayat (1) mewajibkan pemberitahuan tertulis paling lambat 3 x 24 jam jika pelindungan gagal.
-  </p>
-  <p>
-    Undang-Undang Informasi dan Transaksi Elektronik mengatur tindak pidana di sistem elektronik, termasuk akses tanpa hak. Undang-undang itu tidak memberi cara membuat kata sandi. Saat KUHP baru berlaku, nomor pasal pidana berpindah. Karena itu halaman tindakan tidak memakai nomor pasal pidana sebagai langkah.
-  </p>
-  <p>
-    Peraturan Pemerintah Nomor 71 Tahun 2019 mengatur penyelenggara sistem elektronik. Situs ini tidak menyimpulkan bahwa setiap penjual di WhatsApp wajib mendaftar sebagai penyelenggara.
-  </p>
-  <p>
-    RUU Keamanan dan Ketahanan Siber masuk Prolegnas 2026 dan masih dibahas. RUU itu belum menjadi undang-undang. Arahnya tata kelola nasional dan infrastruktur, bukan panduan harian. Situs ini tidak memakai RUU itu sebagai dasar langkah.
-  </p>
-  <p>
-    Peraturan Badan Siber dan Sandi Negara Nomor 3 Tahun 2021 menamai tema literasi, termasuk kata sandi, transaksi elektronik, perangkat, dan data pribadi. Peraturan itu mengatur penyelenggaraan literasi. Peraturan itu tidak mewajibkan pembaca memakai panjang kata sandi dari NIST.
-  </p>
+    <h2>Hukum Indonesia yang dipakai</h2>
+    <p>
+      Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi berlaku bagi orang yang menentukan tujuan penyimpanan data orang lain. Pasal 2 ayat (2) mengecualikan kegiatan pribadi atau rumah tangga. Pasal 35 mewajibkan pengamanan. Pasal 46 ayat (1) mewajibkan pemberitahuan tertulis paling lambat 3 x 24 jam jika pelindungan gagal.
+    </p>
+    <p>
+      Undang-Undang Informasi dan Transaksi Elektronik mengatur tindak pidana di sistem elektronik, termasuk akses tanpa hak. Undang-undang itu tidak memberi cara membuat kata sandi. Saat KUHP baru berlaku, nomor pasal pidana berpindah. Karena itu halaman tindakan tidak memakai nomor pasal pidana sebagai langkah.
+    </p>
+    <p>
+      Peraturan Pemerintah Nomor 71 Tahun 2019 mengatur penyelenggara sistem elektronik. Situs ini tidak menyimpulkan bahwa setiap penjual di WhatsApp wajib mendaftar sebagai penyelenggara.
+    </p>
+    <p>
+      RUU Keamanan dan Ketahanan Siber masuk Prolegnas 2026 dan masih dibahas. RUU itu belum menjadi undang-undang. Arahnya tata kelola nasional dan infrastruktur, bukan panduan harian. Situs ini tidak memakai RUU itu sebagai dasar langkah.
+    </p>
+    <p>
+      Peraturan Badan Siber dan Sandi Negara Nomor 3 Tahun 2021 menamai tema literasi, termasuk kata sandi, transaksi elektronik, perangkat, dan data pribadi. Peraturan itu mengatur penyelenggaraan literasi. Peraturan itu tidak mewajibkan pembaca memakai panjang kata sandi dari NIST.
+    </p>
+  </div>
 
   <h2>Dokumen</h2>
-  <ul class="source-list">
+  <ul class="source-grid">
     {
       sourceList.map((source) => (
         <li>

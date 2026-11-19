@@ -1,5 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
+import SituationCard from "../components/SituationCard.astro";
 import { href } from "../lib/href";
 import { roles } from "../data/roles";
 import { loadSituations } from "../lib/situations";
@@ -11,41 +12,54 @@ const items = await loadSituations();
   title="Cek Dulu"
   description="Pilih apa yang terjadi hari ini. Lakukan satu hal di ponsel Anda."
 >
-  <h1>Pilih apa yang terjadi. Lakukan satu hal.</h1>
-  <p class="lead">
-    Halaman ini untuk kejadian yang sudah Anda kenali. Anda tidak perlu belajar istilah keamanan siber sebelum mulai.
-  </p>
-  <p>Situs ini tidak meminta kode, PIN, atau data diri.</p>
+  <header class="hero">
+    <h1>Pilih apa yang terjadi.<br />Lakukan satu hal.</h1>
+    <div>
+      <p class="lead">
+        Halaman ini untuk kejadian yang sudah Anda kenali. Anda tidak perlu belajar istilah keamanan siber sebelum mulai.
+      </p>
+      <p class="trust">Situs ini tidak meminta kode, PIN, atau data diri.</p>
+    </div>
+  </header>
 
-  <h2>Apa yang terjadi</h2>
-  <ul class="stack">
-    {
-      items.map((item) => (
-        <li>
-          <a class="card" href={href(`/situasi/${item.id}`)}>
-            <strong>{item.data.title}</strong>
-            <span>{item.data.action[0]}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <section aria-labelledby="situasi-judul">
+    <div class="section-head">
+      <h2 id="situasi-judul">Apa yang terjadi</h2>
+    </div>
+    <ul class="tile-grid">
+      {
+        items.map((item) => (
+          <li>
+            <SituationCard id={item.id} title={item.data.title} number={item.data.order} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
-  <h2>Cek singkat</h2>
-  <p>Delapan pertanyaan. Hasilnya hanya menunjukkan hal yang belum Anda lakukan. Jawaban tinggal di ponsel ini.</p>
-  <p><a class="button" href={href("/cek")}>Mulai cek singkat</a></p>
+  <section class="band" aria-labelledby="cek-judul">
+    <div>
+      <h2 id="cek-judul">Cek singkat</h2>
+      <p>Delapan pertanyaan. Hasilnya hanya menunjukkan hal yang belum Anda lakukan. Jawaban tinggal di ponsel ini.</p>
+    </div>
+    <p><a class="button" href={href("/cek")}>Mulai cek singkat</a></p>
+  </section>
 
-  <h2>Menurut peran Anda hari ini</h2>
-  <ul class="stack">
-    {
-      roles.map((role) => (
-        <li>
-          <a class="card" href={href(`/peran/${role.id}`)}>
-            <strong>{role.title}</strong>
-            <span>{role.line}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <section aria-labelledby="peran-judul">
+    <div class="section-head">
+      <h2 id="peran-judul">Menurut peran Anda hari ini</h2>
+    </div>
+    <ul class="role-grid">
+      {
+        roles.map((role) => (
+          <li>
+            <a class="role-card" href={href(`/peran/${role.id}`)}>
+              <strong>{role.title}</strong>
+              <span>{role.line}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </Base>

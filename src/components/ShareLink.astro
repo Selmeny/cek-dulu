@@ -6,8 +6,8 @@ interface Props {
 const { text } = Astro.props;
 ---
 
-<p>
-  <a id="wa-share" href="https://wa.me/?text=">Kirim halaman ini lewat WhatsApp</a>
+<p class="share-row">
+  <a id="wa-share" class="button" href="https://wa.me/?text=">Kirim halaman ini lewat WhatsApp</a>
 </p>
 <script define:vars={{ text }}>
   const link = document.getElementById("wa-share");

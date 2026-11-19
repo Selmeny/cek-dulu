@@ -109,9 +109,26 @@ if (bundled.includes("fonts.googleapis") || bundled.includes("googletagmanager")
   fail("Third-party tracker or font host is present.");
 }
 
-if (!home.includes("max-width:40rem") && !home.includes("max-width: 40rem")) {
-  fail("Phone width limit is missing.");
+function linkedStyle(html) {
+  const names = [...html.matchAll(/href="[^"]*\/([^"/]+\.css)"/g)].map((match) => match[1]);
+  return names.map((name) => read(`_astro/${name}`)).join("\n");
 }
+
+const css = `${home}\n${linkedStyle(home)}`;
+const oneColumn = /grid-template-columns:\s*1fr/.test(css);
+const fourColumns = /repeat\(\s*4\s*,\s*minmax\(\s*0\s*,\s*1fr\s*\)\s*\)/.test(css);
+const wideGrid = /(?:min-width:\s*72rem|\(width\s*>=\s*72rem\))/.test(css);
+const readingMeasure = /max-width:\s*40rem/.test(css);
+if (!oneColumn || !fourColumns || !wideGrid || !readingMeasure) {
+  fail(
+    `Adaptive grid or the 40rem reading measure is missing. one=${oneColumn} four=${fourColumns} wide=${wideGrid} measure=${readingMeasure}`,
+  );
+}
+if (!css.includes("Plus Jakarta Sans") || !css.includes("Fraunces")) {
+  fail("Font pairing is missing.");
+}
+if (!css.includes(".woff2")) fail("Fonts are not self-hosted.");
+if (bundled.includes("IBM Plex")) fail("IBM Plex is not part of this pairing.");
 
 if (process.exitCode) {
   process.exit(process.exitCode);
