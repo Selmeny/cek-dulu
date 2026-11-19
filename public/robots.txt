@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://selmeny.github.io/cek-dulu/sitemap.xml

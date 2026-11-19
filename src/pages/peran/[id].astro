@@ -1,0 +1,44 @@
+---
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/href";
+import { roles } from "../../data/roles";
+import { forRole, loadSituations } from "../../lib/situations";
+
+export function getStaticPaths() {
+  return roles.map((role) => ({
+    params: { id: role.id },
+    props: { role },
+  }));
+}
+
+const { role } = Astro.props;
+const items = forRole(await loadSituations(), role.id);
+const startIds = new Set<string>(role.start);
+const byId = new Map(items.map((item) => [item.id, item]));
+const start = role.start.flatMap((id) => {
+  const item = byId.get(id);
+  return item ? [item] : [];
+});
+const rest = items.filter((item) => !startIds.has(item.id));
+---
+
+<Base title={role.title} description={role.line}>
+  <h1>{role.title}</h1>
+  <p class="lead">{role.line} Mulai dari situasi di bawah. Satu orang dapat memakai lebih dari satu peran.</p>
+  <ul class="stack">
+    {
+      [...start, ...rest].map((item) => (
+        <li>
+          <a class="card" href={href(`/situasi/${item.id}`)}>
+            <strong>
+              {startIds.has(item.id) ? "Mulai dari sini. " : ""}
+              {item.data.title}
+            </strong>
+            <span>{item.data.action[0]}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p><a href={href("/")}>Semua situasi</a></p>
+</Base>

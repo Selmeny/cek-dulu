@@ -1,0 +1,154 @@
+---
+import Base from "../layouts/Base.astro";
+import { href } from "../lib/href";
+import { loadSituations } from "../lib/situations";
+
+const items = await loadSituations();
+const questions = items.map((item) => ({
+  id: item.id,
+  title: item.data.title,
+  check: item.data.check,
+  action: item.data.action[0],
+  path: href(`/situasi/${item.id}`),
+}));
+const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
+---
+
+<Base
+  title="Cek singkat"
+  description="Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan."
+>
+  <h1>Cek singkat</h1>
+  <p class="lead">Jawab untuk ponsel ini. Hasilnya hanya menunjukkan hal yang belum.</p>
+  <p>Jawaban tinggal di peramban ponsel ini. Situs ini tidak menerima jawaban itu.</p>
+
+  <form id="cek-form">
+    {
+      questions.map((question, index) => (
+        <fieldset>
+          <legend>
+            {index + 1}. {question.check}
+          </legend>
+          <label class="choice">
+            <input type="radio" name={question.id} value="sudah" />
+            Sudah
+          </label>
+          <label class="choice">
+            <input type="radio" name={question.id} value="belum" />
+            Belum
+          </label>
+          <label class="choice">
+            <input type="radio" name={question.id} value="na" />
+            Tidak berlaku
+          </label>
+        </fieldset>
+      ))
+    }
+    <div class="actions">
+      <button type="submit">Lihat yang belum</button>
+      <button type="button" class="secondary" id="cek-reset">Hapus jawaban</button>
+    </div>
+  </form>
+
+  <section id="cek-hasil" class="result" hidden>
+    <h2>Yang belum</h2>
+    <div id="cek-list"></div>
+  </section>
+
+  <noscript>
+    <p>Skrip tidak jalan. Buka <a href={href("/")}>daftar situasi</a> dan lakukan satu hal.</p>
+  </noscript>
+
+  <script id="cek-data" type="application/json" set:html={payload} />
+  <script>
+    const storageKey = "cek-dulu-v1";
+    const dataNode = document.getElementById("cek-data");
+    const form = document.getElementById("cek-form");
+    const result = document.getElementById("cek-hasil");
+    const list = document.getElementById("cek-list");
+    const reset = document.getElementById("cek-reset");
+    if (!(dataNode instanceof HTMLScriptElement) || !(form instanceof HTMLFormElement) || !result || !list || !(reset instanceof HTMLButtonElement)) {
+      throw new Error("Cek singkat tidak lengkap.");
+    }
+
+    const questions = JSON.parse(dataNode.textContent || "[]");
+
+    function readStore() {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function writeStore(value) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(value));
+      } catch {
+        /* Private mode can block storage. The result still shows. */
+      }
+    }
+
+    function collect() {
+      const saved = {};
+      for (const question of questions) {
+        const picked = form.querySelector(`input[name="${question.id}"]:checked`);
+        if (picked instanceof HTMLInputElement) {
+          saved[question.id] = picked.value;
+        }
+      }
+      return saved;
+    }
+
+    function show(saved) {
+      const open = questions.filter((question) => saved[question.id] === "belum");
+      list.replaceChildren();
+      if (open.length === 0) {
+        const note = document.createElement("p");
+        note.textContent = "Tidak ada langkah yang masih terbuka pada cek ini.";
+        list.append(note);
+      } else {
+        const items = document.createElement("ul");
+        for (const question of open) {
+          const row = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = question.path;
+          link.textContent = question.title;
+          row.append(link, document.createTextNode(`. ${question.action}`));
+          items.append(row);
+        }
+        list.append(items);
+      }
+      result.hidden = false;
+      result.scrollIntoView({ block: "nearest" });
+    }
+
+    const saved = readStore();
+    for (const question of questions) {
+      const value = saved[question.id];
+      if (!value) continue;
+      const input = form.querySelector(`input[name="${question.id}"][value="${value}"]`);
+      if (input instanceof HTMLInputElement) input.checked = true;
+    }
+    if (Object.keys(saved).length > 0) show(saved);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const next = collect();
+      writeStore(next);
+      show(next);
+    });
+
+    reset.addEventListener("click", () => {
+      try {
+        localStorage.removeItem(storageKey);
+      } catch {
+        /* Storage may be blocked. */
+      }
+      form.reset();
+      result.hidden = true;
+      list.replaceChildren();
+    });
+  </script>
+</Base>

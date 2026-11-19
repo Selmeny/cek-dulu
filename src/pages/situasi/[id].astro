@@ -1,0 +1,83 @@
+---
+import Base from "../../layouts/Base.astro";
+import ShareLink from "../../components/ShareLink.astro";
+import { href } from "../../lib/href";
+import { sourceById } from "../../data/sources";
+import { roleById } from "../../data/roles";
+import { loadSituations } from "../../lib/situations";
+
+export async function getStaticPaths() {
+  const items = await loadSituations();
+  return items.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const data = entry.data;
+const shareText = `${data.title}. ${data.action[0]}`;
+---
+
+<Base title={data.title} description={data.lead}>
+  <h1>{data.title}</h1>
+  <p class="lead">{data.lead}</p>
+
+  <h2>Lakukan ini sekarang</h2>
+  <div class="action">
+    <ol>
+      {data.action.map((step) => <li>{step}</li>)}
+    </ol>
+  </div>
+
+  <h2>Mengapa ini berbahaya</h2>
+  <p>{data.why}</p>
+
+  <h2>Kalau ini sudah terjadi</h2>
+  <ul class="plain-list">
+    {data.already.map((step) => <li>{step}</li>)}
+  </ul>
+  <ul class="plain-list">
+    {
+      data.report.map((item) => (
+        <li>
+          {item.href ? <a href={item.href}>{item.label}</a> : <strong>{item.label}</strong>}
+          {". "}
+          {item.note}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>Dari mana saran ini</h2>
+  <p>{data.law}</p>
+  <ul class="plain-list">
+    {
+      data.sources.map((id) => {
+        const source = sourceById(id);
+        return (
+          <li>
+            <a href={source.url}>{source.title}</a>
+          </li>
+        );
+      })
+    }
+  </ul>
+  <p class="muted">Daftar lengkap dan batas pemakaian ada di <a href={href("/sumber")}>halaman sumber</a>.</p>
+
+  <h2>Peran yang memakai halaman ini</h2>
+  <ul class="plain-list">
+    {
+      data.roles.map((id) => {
+        const role = roleById(id);
+        return role ? (
+          <li>
+            <a href={href(`/peran/${role.id}`)}>{role.title}</a>
+          </li>
+        ) : null;
+      })
+    }
+  </ul>
+
+  <ShareLink text={shareText} />
+</Base>
