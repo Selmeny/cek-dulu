@@ -1,0 +1,18 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<p>
+  <a id="wa-share" href="https://wa.me/?text=">Kirim halaman ini lewat WhatsApp</a>
+</p>
+<script define:vars={{ text }}>
+  const link = document.getElementById("wa-share");
+  if (link) {
+    const payload = `${text}\n${location.href}`;
+    link.setAttribute("href", `https://wa.me/?text=${encodeURIComponent(payload)}`);
+  }
+</script>
