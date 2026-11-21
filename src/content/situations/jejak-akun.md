@@ -2,6 +2,7 @@
 title: "Akun sekolah dan jejak yang orang lain lihat"
 lead: "Tugas, foto kartu, lokasi, atau akun media sosial dapat dilihat orang yang tidak Anda kenal."
 order: 8
+group: sekali
 roles:
   - pelajar
   - ortu

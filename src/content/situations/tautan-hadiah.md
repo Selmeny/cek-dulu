@@ -2,6 +2,7 @@
 title: "Tautan hadiah, paket, atau tagihan"
 lead: "Sebuah pesan menawar hadiah, menagih paket, atau mengirim berkas aplikasi yang harus segera dibuka."
 order: 3
+group: sedang
 roles:
   - ponsel
   - uang

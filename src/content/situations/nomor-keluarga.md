@@ -2,6 +2,7 @@
 title: "Nomor baru mengaku keluarga"
 lead: "Chat atau telepon dari nomor baru berkata bahwa ia adalah anak, orang tua, atau teman, lalu meminta uang."
 order: 2
+group: sedang
 roles:
   - ponsel
   - ortu

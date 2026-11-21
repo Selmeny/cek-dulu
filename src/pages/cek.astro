@@ -1,11 +1,14 @@
 ---
 import Base from "../layouts/Base.astro";
+import { groups } from "../data/functions";
 import { href } from "../lib/href";
 import { loadSituations } from "../lib/situations";
 
 const items = await loadSituations();
 const questions = items.map((item) => ({
   id: item.id,
+  group: item.data.group,
+  order: item.data.order,
   title: item.data.title,
   check: item.data.check,
   action: item.data.action[0],
@@ -17,37 +20,48 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
 <Base
   title="Cek singkat"
   description="Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan."
+  section="cek"
 >
   <h1>Cek singkat</h1>
   <p class="lead">Jawab untuk ponsel ini. Hasilnya hanya menunjukkan hal yang belum.</p>
   <p>Jawaban tinggal di peramban ponsel ini. Situs ini tidak menerima jawaban itu.</p>
 
-  <form id="cek-form" class="q-grid">
+  <form id="cek-form">
     {
-      questions.map((question, index) => (
-        <fieldset>
-          <legend class="sr-only">
-            {index + 1}. {question.check}
-          </legend>
-          <p class="q-label" aria-hidden="true">
-            <span class="q-no">{index + 1}</span>
-            <span>{question.check}</span>
-          </p>
-          <div class="choices">
-            <label class="choice">
-              <input type="radio" name={question.id} value="sudah" />
-              Sudah
-            </label>
-            <label class="choice">
-              <input type="radio" name={question.id} value="belum" />
-              Belum
-            </label>
-            <label class="choice">
-              <input type="radio" name={question.id} value="na" />
-              Tidak berlaku
-            </label>
+      groups.map((group) => (
+        <section class="q-section" aria-labelledby={`cek-${group.id}`}>
+          <h2 id={`cek-${group.id}`}>{group.title}</h2>
+          <p>{group.line}</p>
+          <div class="q-grid">
+            {questions
+              .filter((question) => question.group === group.id)
+              .map((question) => (
+                <fieldset>
+                  <legend class="sr-only">
+                    {question.order}. {question.check}
+                  </legend>
+                  <p class="q-label" aria-hidden="true">
+                    <span class="q-no">{question.order}</span>
+                    <span>{question.check}</span>
+                  </p>
+                  <div class="choices">
+                    <label class="choice">
+                      <input type="radio" name={question.id} value="sudah" />
+                      Sudah
+                    </label>
+                    <label class="choice">
+                      <input type="radio" name={question.id} value="belum" />
+                      Belum
+                    </label>
+                    <label class="choice">
+                      <input type="radio" name={question.id} value="na" />
+                      Tidak berlaku
+                    </label>
+                  </div>
+                </fieldset>
+              ))}
           </div>
-        </fieldset>
+        </section>
       ))
     }
     <div class="actions">
@@ -62,7 +76,10 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
   </section>
 
   <noscript>
-    <p>Skrip tidak jalan. Buka <a href={href("/")}>daftar situasi</a> dan lakukan satu hal.</p>
+    <p>
+      Skrip tidak jalan. Buka <a href={href("/sedang-terjadi")}>kejadian yang sedang terjadi</a> atau
+      <a href={href("/lakukan-sekali")}>hal yang dilakukan sekali</a>.
+    </p>
   </noscript>
 
   <script id="cek-data" type="application/json" set:html={payload} />

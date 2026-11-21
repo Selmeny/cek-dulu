@@ -1,13 +1,15 @@
 ---
+import { doors, type DoorId } from "../data/functions";
 import { href } from "../lib/href";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description: string;
+  section?: DoorId;
 }
 
-const { title, description } = Astro.props;
+const { title, description, section } = Astro.props;
 const pageTitle = title === "Cek Dulu" ? title : `${title} — Cek Dulu`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -29,8 +31,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <div class="shell bar">
         <a class="brand" href={href("/")}>Cek Dulu</a>
         <nav class="site-nav" aria-label="Utama">
-          <a href={href("/cek")}>Cek singkat</a>
-          <a href={href("/sumber")}>Sumber</a>
+          {
+            doors.map((door) => (
+              <a href={href(door.href)} aria-current={section === door.id ? "page" : undefined}>
+                {door.nav}
+              </a>
+            ))
+          }
         </nav>
       </div>
     </header>
@@ -41,7 +48,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <p>
         Informasi umum. Bukan situs pemerintah. Bukan nasihat hukum. Situs ini tidak meminta kode, PIN, atau data diri.
       </p>
-      <p>
+      <p class="foot-links">
+        <a href={href("/sumber")}>Sumber</a>
         <a href={href("/tentang")}>Tentang situs ini</a>
       </p>
     </footer>

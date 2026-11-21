@@ -2,6 +2,7 @@
 title: "Anda menyimpan data orang lain"
 lead: "Anda menyimpan nama, alamat, nomor, foto KTP, atau data murid untuk pesanan, arisan, atau kegiatan."
 order: 6
+group: sekali
 roles:
   - penjual
   - pelajar

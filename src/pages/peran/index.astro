@@ -1,0 +1,28 @@
+---
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/href";
+import { roles } from "../../data/roles";
+---
+
+<Base
+  title="Menurut peran"
+  description="Pilih peran Anda hari ini. Halaman itu menunjukkan situasi untuk peran itu."
+  section="peran"
+>
+  <h1>Menurut peran Anda hari ini</h1>
+  <p class="lead">
+    Pilih satu peran. Halaman itu menunjukkan situasi untuk peran itu. Satu orang dapat memakai lebih dari satu peran.
+  </p>
+  <ul class="role-grid">
+    {
+      roles.map((role) => (
+        <li>
+          <a class="role-card" href={href(`/peran/${role.id}`)}>
+            <strong>{role.title}</strong>
+            <span>{role.line}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>
