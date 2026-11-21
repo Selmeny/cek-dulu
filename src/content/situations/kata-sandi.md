@@ -2,6 +2,7 @@
 title: "Kata sandi akun penting"
 lead: "Akun bank, surel, sekolah, atau media sosial masih memakai kata yang pendek, sama di banyak tempat, atau diganti hanya karena jadwal."
 order: 7
+group: sekali
 roles:
   - ponsel
   - uang

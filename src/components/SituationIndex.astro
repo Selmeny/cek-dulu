@@ -1,0 +1,30 @@
+---
+import Base from "../layouts/Base.astro";
+import SituationCard from "./SituationCard.astro";
+import type { DoorId } from "../data/functions";
+import type { Situation } from "../lib/situations";
+
+interface Props {
+  section: DoorId;
+  title: string;
+  description: string;
+  lead: string;
+  items: Situation[];
+}
+
+const { section, title, description, lead, items } = Astro.props;
+---
+
+<Base title={title} description={description} section={section}>
+  <h1>{title}</h1>
+  <p class="lead">{lead}</p>
+  <ul class="tile-grid">
+    {
+      items.map((item) => (
+        <li>
+          <SituationCard id={item.id} title={item.data.title} number={item.data.order} />
+        </li>
+      ))
+    }
+  </ul>
+</Base>

@@ -23,9 +23,11 @@ const start = role.start.flatMap((id) => {
 const rest = items.filter((item) => !startIds.has(item.id));
 ---
 
-<Base title={role.title} description={role.line}>
+<Base title={role.title} description={role.line} section="peran">
   <h1>{role.title}</h1>
-  <p class="lead">{role.line} Mulai dari situasi di bawah. Satu orang dapat memakai lebih dari satu peran.</p>
+  <p class="lead">
+    {role.line} Situasi di bawah mencakup kejadian yang sedang terjadi dan hal yang Anda lakukan sekali.
+  </p>
   <ul class="tile-grid">
     {
       [...start, ...rest].map((item) => (
@@ -40,5 +42,5 @@ const rest = items.filter((item) => !startIds.has(item.id));
       ))
     }
   </ul>
-  <p><a href={href("/")}>Semua situasi</a></p>
+  <p><a href={href("/peran")}>Semua peran</a></p>
 </Base>

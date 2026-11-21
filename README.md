@@ -2,7 +2,7 @@
 
 Static site in Bahasa Indonesia. A person who is not an IT worker opens one daily event and does one safer action.
 
-The home page lists events in ordinary words. A short check can be forwarded. Answers stay in the browser.
+The home page asks the reader to choose one function. Each function page has one objective. A short check can be forwarded. Answers stay in the browser.
 
 ## Commands
 

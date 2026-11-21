@@ -2,6 +2,7 @@
 title: "Transfer, QRIS, atau investasi yang mendesak"
 lead: "Seseorang meminta transfer sekarang, menawar untung besar, atau menempel kode QR yang harus segera dipindai."
 order: 4
+group: sedang
 roles:
   - uang
 action:

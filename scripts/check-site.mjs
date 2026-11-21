@@ -57,8 +57,50 @@ const headings = [
 ];
 
 const home = read("index.html");
+const homeLines = [
+  "Pilih satu fungsi. Setiap halaman punya satu tujuan.",
+  "Pilih kejadian yang sedang berjalan. Lakukan satu hal.",
+  "Siapkan ini sebelum sesuatu terjadi. Lakukan satu hal.",
+  "Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan.",
+  "Pilih peran Anda hari ini. Halaman itu menunjukkan situasi untuk peran itu.",
+];
+for (const line of homeLines) {
+  if (!home.includes(line)) fail(`Home is missing: ${line}`);
+}
 for (const title of titles) {
-  if (!home.includes(title)) fail(`Home is missing: ${title}`);
+  if (home.includes(title)) fail(`Home still lists a situation: ${title}`);
+}
+for (const role of ["Pemakai ponsel", "Pelajar atau mahasiswa", "Orang tua"]) {
+  if (home.includes(role)) fail(`Home still lists a role: ${role}`);
+}
+
+const happening = titles.slice(0, 5);
+const once = titles.slice(5);
+const happeningPage = read("sedang-terjadi/index.html");
+for (const title of happening) {
+  if (!happeningPage.includes(title)) fail(`Happening page is missing: ${title}`);
+}
+for (const title of once) {
+  if (happeningPage.includes(title)) fail(`Happening page lists a setup item: ${title}`);
+}
+
+const oncePage = read("lakukan-sekali/index.html");
+for (const title of once) {
+  if (!oncePage.includes(title)) fail(`Setup page is missing: ${title}`);
+}
+for (const title of happening) {
+  if (oncePage.includes(title)) fail(`Setup page lists an event: ${title}`);
+}
+
+const rolesPage = read("peran/index.html");
+for (const role of [
+  "Pemakai ponsel",
+  "Anda memegang uang digital",
+  "Anda menjual atau menyimpan data orang",
+  "Pelajar atau mahasiswa",
+  "Orang tua",
+]) {
+  if (!rolesPage.includes(role)) fail(`Role index is missing: ${role}`);
 }
 
 const cek = read("cek/index.html");
@@ -83,6 +125,11 @@ for (const id of situationIds) {
   for (const heading of headings) {
     if (!html.includes(heading)) fail(`${id} is missing heading: ${heading}`);
   }
+  if (!html.includes("Fungsi halaman ini")) fail(`${id} does not name its function.`);
+  const functionPath = happening.includes(titles[situationIds.indexOf(id)])
+    ? "/cek-dulu/sedang-terjadi/"
+    : "/cek-dulu/lakukan-sekali/";
+  if (!html.includes(functionPath)) fail(`${id} does not link to ${functionPath}`);
   if (!html.includes('id="wa-share"')) fail(`${id} has no WhatsApp share link.`);
   if (!html.includes("https://")) fail(`${id} has no https link.`);
 }
@@ -101,6 +148,19 @@ for (const host of [
   "sipasti.ojk.go.id",
 ]) {
   if (!sources.includes(host)) fail(`Source page is missing ${host}`);
+}
+
+const sitemap = read("sitemap.xml");
+for (const path of [
+  "/cek-dulu/",
+  "/cek-dulu/sedang-terjadi/",
+  "/cek-dulu/lakukan-sekali/",
+  "/cek-dulu/cek/",
+  "/cek-dulu/peran/",
+  "/cek-dulu/tentang/",
+  "/cek-dulu/sumber/",
+]) {
+  if (!sitemap.includes(`https://selmeny.github.io${path}`)) fail(`Sitemap is missing ${path}`);
 }
 
 const files = walk("./");
@@ -134,4 +194,4 @@ if (process.exitCode) {
   process.exit(process.exitCode);
 }
 
-console.log(`Checked ${situationIds.length} situations, 5 roles, the short check, and the source page.`);
+console.log(`Checked ${situationIds.length} situations, 4 functions, 5 roles, the short check, and the source page.`);

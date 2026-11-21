@@ -2,6 +2,7 @@
 title: "Belanja daring yang aneh"
 lead: "Harga jauh di bawah toko lain, penjual memindahkan Anda ke chat, lalu meminta transfer di luar aplikasi."
 order: 5
+group: sedang
 roles:
   - uang
   - penjual

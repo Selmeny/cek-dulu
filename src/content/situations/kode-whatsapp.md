@@ -2,6 +2,7 @@
 title: "Ada yang minta kode WhatsApp"
 lead: "Seseorang meminta kode 6 digit yang baru masuk ke ponsel Anda."
 order: 1
+group: sedang
 roles:
   - ponsel
   - pelajar
