@@ -19,12 +19,12 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
 
 <Base
   title="Cek singkat"
-  description="Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan."
+  description="Delapan pertanyaan. Hasilnya cuma yang belum kamu lakukan."
   section="cek"
 >
   <h1>Cek singkat</h1>
-  <p class="lead">Jawab untuk ponsel ini. Hasilnya hanya menunjukkan hal yang belum.</p>
-  <p>Jawaban tinggal di peramban ponsel ini. Situs ini tidak menerima jawaban itu.</p>
+  <p class="lead">Jawab untuk ponsel ini. Hasilnya cuma yang belum.</p>
+  <p>Jawaban tinggal di ponsel ini. Situs ini tidak menerima jawaban itu.</p>
 
   <form id="cek-form">
     {
@@ -77,8 +77,8 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
 
   <noscript>
     <p>
-      Skrip tidak jalan. Buka <a href={href("/sedang-terjadi")}>kejadian yang sedang terjadi</a> atau
-      <a href={href("/lakukan-sekali")}>hal yang dilakukan sekali</a>.
+      Halaman ini butuh skrip. Kalau tidak jalan, buka <a href={href("/sedang-terjadi")}>yang sedang terjadi</a> atau
+      <a href={href("/lakukan-sekali")}>yang dilakukan sekali</a>.
     </p>
   </noscript>
 
@@ -129,7 +129,7 @@ const payload = JSON.stringify(questions).replaceAll("<", "\\u003c");
       list.replaceChildren();
       if (open.length === 0) {
         const note = document.createElement("p");
-        note.textContent = "Tidak ada langkah yang masih terbuka pada cek ini.";
+        note.textContent = "Tidak ada yang masih belum di cek ini.";
         list.append(note);
       } else {
         const items = document.createElement("ul");

@@ -30,39 +30,39 @@ function fail(message) {
 const titles = [
   "Ada yang minta kode WhatsApp",
   "Nomor baru mengaku keluarga",
-  "Tautan hadiah, paket, atau tagihan",
+  "Link hadiah, paket, atau tagihan",
   "Transfer, QRIS, atau investasi yang mendesak",
-  "Belanja daring yang aneh",
-  "Anda menyimpan data orang lain",
+  "Belanja online yang aneh",
+  "Kamu simpan data orang lain",
   "Kata sandi akun penting",
-  "Akun sekolah dan jejak yang orang lain lihat",
+  "Akun sekolah dan yang orang lain lihat",
 ];
 
 const checks = [
-  "Saya tidak memberikan kode WhatsApp kepada siapa pun.",
-  "Saya menghubungi nomor lama sebelum percaya pada nomor baru yang mengaku keluarga.",
-  "Saya membuka aplikasi resmi sendiri, bukan tautan dari chat.",
-  "Saya memeriksa nama penerima di aplikasi resmi sebelum transfer yang terasa terburu.",
-  "Saya membayar belanja daring di dalam aplikasi pasar bila barang ada di sana.",
-  "Saya tidak meminta foto KTP atau PIN di chat.",
-  "Kata sandi akun penting saya panjang dan berbeda, dan saya tidak menggantinya hanya karena jadwal.",
-  "Akun media sosial saya tidak terbuka untuk semua orang, dan pemulihannya milik saya.",
+  "Saya tidak kasih kode WhatsApp ke siapa pun.",
+  "Saya hubungi nomor lama dulu, sebelum percaya nomor baru yang mengaku keluarga.",
+  "Saya buka aplikasi resmi sendiri, bukan dari link di chat.",
+  "Saya cek nama penerima di aplikasi resmi sebelum transfer yang terasa terburu.",
+  "Saya bayar belanja online di dalam aplikasi belanja kalau barangnya ada di sana.",
+  "Saya tidak minta foto KTP atau PIN di chat.",
+  "Kata sandi akun penting saya panjang dan berbeda. Saya tidak menggantinya cuma karena jadwal.",
+  "Akun media sosial saya tidak terbuka untuk semua orang, dan yang bisa mengambilnya cuma saya.",
 ];
 
 const headings = [
   "Lakukan ini sekarang",
-  "Mengapa ini berbahaya",
-  "Kalau ini sudah terjadi",
+  "Kenapa ini bahaya",
+  "Kalau sudah terlanjur",
   "Dari mana saran ini",
 ];
 
 const home = read("index.html");
 const homeLines = [
-  "Pilih satu fungsi. Setiap halaman punya satu tujuan.",
-  "Pilih kejadian yang sedang berjalan. Lakukan satu hal.",
-  "Siapkan ini sebelum sesuatu terjadi. Lakukan satu hal.",
-  "Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan.",
-  "Pilih peran Anda hari ini. Halaman itu menunjukkan situasi untuk peran itu.",
+  "Pilih satu. Setiap halaman cuma untuk satu hal.",
+  "Pilih yang lagi terjadi. Lakukan satu hal.",
+  "Siapkan ini sebelum ada masalah. Lakukan satu hal.",
+  "Delapan pertanyaan. Hasilnya cuma yang belum kamu lakukan.",
+  "Pilih kegiatan kamu hari ini. Halaman itu yang cocok untuk kamu.",
 ];
 for (const line of homeLines) {
   if (!home.includes(line)) fail(`Home is missing: ${line}`);
@@ -95,8 +95,8 @@ for (const title of happening) {
 const rolesPage = read("peran/index.html");
 for (const role of [
   "Pemakai ponsel",
-  "Anda memegang uang digital",
-  "Anda menjual atau menyimpan data orang",
+  "Kamu pegang uang digital",
+  "Kamu jual atau simpan data orang",
   "Pelajar atau mahasiswa",
   "Orang tua",
 ]) {
@@ -125,7 +125,7 @@ for (const id of situationIds) {
   for (const heading of headings) {
     if (!html.includes(heading)) fail(`${id} is missing heading: ${heading}`);
   }
-  if (!html.includes("Fungsi halaman ini")) fail(`${id} does not name its function.`);
+  if (!html.includes("Halaman ini bagian dari")) fail(`${id} does not name its function.`);
   const functionPath = happening.includes(titles[situationIds.indexOf(id)])
     ? "/cek-dulu/sedang-terjadi/"
     : "/cek-dulu/lakukan-sekali/";

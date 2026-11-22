@@ -4,14 +4,14 @@ export const groups = [
     href: "/sedang-terjadi",
     title: "Sedang terjadi",
     nav: "Sedang terjadi",
-    line: "Pilih kejadian yang sedang berjalan. Lakukan satu hal.",
+    line: "Pilih yang lagi terjadi. Lakukan satu hal.",
   },
   {
     id: "sekali",
     href: "/lakukan-sekali",
     title: "Lakukan sekali",
     nav: "Lakukan sekali",
-    line: "Siapkan ini sebelum sesuatu terjadi. Lakukan satu hal.",
+    line: "Siapkan ini sebelum ada masalah. Lakukan satu hal.",
   },
 ] as const;
 
@@ -26,14 +26,14 @@ export const doors = [
     href: "/cek",
     title: "Cek singkat",
     nav: "Cek singkat",
-    line: "Delapan pertanyaan. Hasilnya menunjukkan hal yang belum Anda lakukan.",
+    line: "Delapan pertanyaan. Hasilnya cuma yang belum kamu lakukan.",
   },
   {
     id: "peran",
     href: "/peran",
     title: "Menurut peran",
     nav: "Peran",
-    line: "Pilih peran Anda hari ini. Halaman itu menunjukkan situasi untuk peran itu.",
+    line: "Pilih kegiatan kamu hari ini. Halaman itu yang cocok untuk kamu.",
   },
 ] as const;
 
