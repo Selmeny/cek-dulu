@@ -1,32 +1,32 @@
 ---
 title: "Transfer, QRIS, atau investasi yang mendesak"
-lead: "Seseorang meminta transfer sekarang, menawar untung besar, atau menempel kode QR yang harus segera dipindai."
+lead: "Ada yang minta transfer sekarang, ada tawaran untung besar, atau ada kode QR yang harus segera kamu scan."
 order: 4
 group: sedang
 roles:
   - uang
 action:
-  - "Berhenti. Jangan lanjut karena waktu terasa sempit."
-  - "Untuk transfer dan QRIS, periksa nama penerima di aplikasi bank atau dompet resmi sebelum Anda menekan bayar."
-  - "Untuk investasi atau pinjaman, cek penawaran itu di SIPASTI sebelum Anda mengirim uang."
-why: "Desakan membuat orang melewati pemeriksaan nama penerima. Kode QR yang ditempel di atas kode toko dapat mengarah ke orang lain. Imbal hasil yang besar dan cepat adalah tanda untuk berhenti. NIST CSF 2.0 PR.AT-01 menyebut kemampuan mengenali pola ini."
+  - "Berhenti. Jangan lanjut cuma karena waktunya terasa sempit."
+  - "Untuk transfer dan QRIS, cek nama penerima di aplikasi bank atau dompet resmi sebelum kamu tekan bayar."
+  - "Untuk investasi atau pinjaman, cek tawarannya di SIPASTI sebelum kamu kirim uang."
+why: "Kalau diburu, orang sering lupa cek nama penerima. Kode QR yang ditempel di atas kode toko bisa mengarah ke orang lain. Untung besar dan cepat itu tanda untuk berhenti. NIST CSF 2.0 PR.AT-01 menyebut kemampuan kenali pola ini."
 already:
   - "Hubungi bank atau dompet digital lewat aplikasi resmi sekarang. Jangan pakai nomor yang dikirim penawar."
-  - "Laporkan ke Indonesia Anti-Scam Centre pada hari yang sama. Semakin cepat laporan, semakin besar peluang penahanan dana. Peluang itu bukan janji pengembalian."
-  - "Simpan bukti transfer, nama rekening, dan percakapan."
+  - "Lapor ke Indonesia Anti-Scam Centre di hari yang sama. Makin cepat lapor, makin besar peluang dana ditahan. Itu bukan janji uang kembali."
+  - "Simpan bukti transfer, nama rekening, dan chatnya."
 report:
   - label: "Indonesia Anti-Scam Centre"
     href: "https://iasc.ojk.go.id/"
-    note: "Jalur resmi untuk penanganan dana. Siapkan kronologi, rekening tujuan, bukti transfer, dan percakapan. Laporan ini tidak menggantikan laporan polisi."
+    note: "Jalur resmi untuk urus dana. Siapkan urutan kejadian, rekening tujuan, bukti transfer, dan chat. Laporan ini tidak menggantikan laporan polisi."
   - label: "SIPASTI"
     href: "https://sipasti.ojk.go.id/"
-    note: "Laporkan investasi atau pinjaman yang diduga ilegal lewat situs ini."
+    note: "Lapor investasi atau pinjaman yang diduga ilegal lewat situs ini."
   - label: "Laporan polisi"
     note: "Buat laporan di kantor polisi dengan bukti yang sama."
 sources:
   - csfAt
   - iasc
   - sipasti
-check: "Saya memeriksa nama penerima di aplikasi resmi sebelum transfer yang terasa terburu."
-law: "Hukum tidak mewajibkan jeda sebelum transfer. Jeda ini praktik baik. Penipuan dapat diproses sebagai tindak pidana, tetapi halaman ini tidak memakai nomor pasal sebagai langkah Anda. Nomor pasal pidana berubah saat KUHP baru berlaku."
+check: "Saya cek nama penerima di aplikasi resmi sebelum transfer yang terasa terburu."
+law: "Hukum tidak mewajibkan kamu berhenti dulu sebelum transfer. Jeda ini saran yang baik. Penipuan bisa diproses sebagai tindak pidana, tapi halaman ini tidak pakai nomor pasal sebagai langkah kamu. Nomor pasal pidana berubah saat KUHP baru berlaku."
 ---
