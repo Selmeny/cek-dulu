@@ -829,6 +829,8 @@ button.role-card {
   width: 100%;
   font: inherit;
   text-align: left;
+  align-items: stretch;
+  justify-content: flex-start;
   cursor: pointer;
 }
 
