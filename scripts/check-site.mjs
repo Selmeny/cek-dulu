@@ -1,5 +1,14 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import {
+  STORAGE_KEY,
+  parseStore,
+  markDone,
+  markUndone,
+  chooseRole,
+  clearRole,
+  isComplete,
+} from "../src/lib/checklist.mjs";
 
 const dist = new URL("../dist/", import.meta.url);
 
@@ -26,6 +35,40 @@ function fail(message) {
   console.error(message);
   process.exitCode = 1;
 }
+
+function assertStore(name, condition) {
+  if (!condition) fail(`Store: ${name}`);
+}
+
+function checkStore() {
+  const empty = parseStore(null);
+  assertStore("missing is empty", empty.role === null && Object.keys(empty.done).length === 0);
+  assertStore("bad json", parseStore("{").role === null);
+  assertStore("array", parseStore("[]").role === null);
+  const unknown = parseStore(JSON.stringify({ role: "nope", done: { pelajar: ["kata-sandi", "old-topic", 3], nope: ["x"] } }));
+  assertStore("unknown role shows the role list", unknown.role === null);
+  assertStore("keeps known topic ids", unknown.done.pelajar[0] === "kata-sandi" && unknown.done.pelajar[1] === "old-topic");
+  assertStore("drops non-strings", unknown.done.pelajar.length === 2);
+  assertStore("drops unknown role key", unknown.done.nope === undefined);
+  const badDone = parseStore(JSON.stringify({ role: "pelajar", done: "x" }));
+  assertStore("bad done becomes empty", badDone.role === "pelajar" && Object.keys(badDone.done).length === 0);
+  const marked = markDone(empty, "pelajar", "kata-sandi");
+  assertStore("mark", marked.done.pelajar.includes("kata-sandi"));
+  const again = markDone(marked, "pelajar", "kata-sandi");
+  assertStore("no duplicate", again.done.pelajar.length === 1);
+  const cleared = markUndone(again, "pelajar", "kata-sandi");
+  assertStore("unmark", cleared.done.pelajar.length === 0);
+  const chosen = chooseRole(marked, "ortu");
+  assertStore("choose keeps marks", chosen.role === "ortu" && chosen.done.pelajar.includes("kata-sandi"));
+  const back = clearRole(chosen);
+  assertStore("clear role keeps marks", back.role === null && back.done.pelajar.includes("kata-sandi"));
+  assertStore("complete", isComplete(marked, "pelajar", ["kata-sandi"]) === true);
+  assertStore("extra id does not block", isComplete({ role: "pelajar", done: { pelajar: ["kata-sandi", "old"] } }, "pelajar", ["kata-sandi"]) === true);
+  assertStore("missing id blocks", isComplete(marked, "pelajar", ["kata-sandi", "jejak-akun"]) === false);
+  assertStore("key", STORAGE_KEY === "cek-dulu-checklist-v1");
+}
+
+checkStore();
 
 const titles = [
   "Ada yang minta kode WhatsApp",
