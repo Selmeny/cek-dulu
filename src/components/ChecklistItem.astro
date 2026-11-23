@@ -1,0 +1,54 @@
+---
+interface Report {
+  label: string;
+  href?: string;
+  note: string;
+}
+
+interface Props {
+  item: {
+    id: string;
+    data: {
+      title: string;
+      lead: string;
+      action: string[];
+      why: string;
+      law: string;
+      already: string[];
+      report: Report[];
+    };
+  };
+}
+
+const { item } = Astro.props;
+const { title, lead, action, why, law, already, report } = item.data;
+---
+
+<details data-topic={item.id}>
+  <summary>
+    <span>{title}</span>
+    <span data-done-flag hidden>Sudah</span>
+  </summary>
+  <p>{lead}</p>
+  <h3>Lakukan ini sekarang</h3>
+  <ul>
+    {action.map((step) => <li>{step}</li>)}
+  </ul>
+  <p>{why}</p>
+  <p>{law}</p>
+  <h3>Kalau sudah terlanjur</h3>
+  <ul>
+    {already.map((step) => <li>{step}</li>)}
+  </ul>
+  <ul>
+    {
+      report.map((entry) => (
+        <li>
+          {entry.href ? <a href={entry.href}>{entry.label}</a> : <strong>{entry.label}</strong>}
+          <span>{entry.note}</span>
+        </li>
+      ))
+    }
+  </ul>
+  <button type="button" data-mark data-label-open="Sudah" data-label-done="Belum">Sudah</button>
+</details>

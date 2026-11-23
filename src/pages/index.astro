@@ -1,29 +1,151 @@
 ---
 import Base from "../layouts/Base.astro";
-import { doors } from "../data/functions";
-import { href } from "../lib/href";
+import ChecklistItem from "../components/ChecklistItem.astro";
+import { roles } from "../data/roles";
+import { forRole, loadSituations } from "../lib/situations";
+
+const situations = await loadSituations();
+const baseline = "Ini daftar minimum yang perlu kamu lakukan untuk jaga diri. Ini bukan jaminan aman dari semua serangan.";
+const doneLine = "Kamu selesai untuk peran ini.";
 ---
 
-<Base
-  title="Cek Dulu"
-  description="Pilih satu. Setiap halaman cuma untuk satu hal."
->
-  <header class="hero">
-    <h1>Apa yang mau kamu lakukan?</h1>
-    <p class="lead">Pilih satu. Setiap halaman cuma untuk satu hal.</p>
-    <p class="trust">Situs ini tidak minta kode, PIN, atau data diri.</p>
-  </header>
-
-  <ul class="door-grid">
+<Base title="Cek Dulu" description={baseline}>
+  <div data-checklist-root>
+    <section data-role-picker>
+      <h1>Kamu yang mana hari ini?</h1>
+      <p class="lead">{baseline}</p>
+      <ul class="role-grid">
+        {
+          roles.map((role) => (
+            <li>
+              <button type="button" class="role-card" data-choose-role={role.id}>
+                <strong>{role.title}</strong>
+                <span>{role.line}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
     {
-      doors.map((door) => (
-        <li>
-          <a class="door-card" href={href(door.href)}>
-            <strong>{door.title}</strong>
-            <span>{door.line}</span>
-          </a>
-        </li>
+      roles.map((role) => (
+        <section data-role-list={role.id} aria-labelledby={`role-${role.id}`}>
+          <h2 id={`role-${role.id}`}>{role.title}</h2>
+          <p class="lead">{baseline}</p>
+          <button type="button" data-role-switch>Ganti peran</button>
+          {forRole(situations, role.id).map((item) => (
+            <ChecklistItem item={item} />
+          ))}
+          <div class="done-line" data-done-line>
+            <p>{doneLine}</p>
+            <p>{baseline}</p>
+          </div>
+        </section>
       ))
     }
-  </ul>
+    <noscript>
+      <p>Tanda "Sudah" butuh skrip. Kamu tetap bisa baca setiap daftar.</p>
+    </noscript>
+  </div>
+  <script>
+    import {
+      STORAGE_KEY,
+      parseStore,
+      markDone,
+      markUndone,
+      chooseRole,
+      clearRole,
+      isComplete,
+    } from "../lib/checklist.mjs";
+
+    const root = document.querySelector("[data-checklist-root]");
+    const picker = document.querySelector("[data-role-picker]");
+    const lists = [...document.querySelectorAll("[data-role-list]")];
+    const choosers = picker ? [...picker.querySelectorAll("[data-choose-role]")] : [];
+
+    function ready() {
+      if (!root || !picker || lists.length !== 5 || choosers.length !== 5) return false;
+      for (const list of lists) {
+        const topics = [...list.querySelectorAll("[data-topic]")];
+        if (topics.length < 1) return false;
+        if (!list.querySelector("[data-role-switch]")) return false;
+        if (!list.querySelector("[data-done-line]")) return false;
+        for (const topic of topics) {
+          if (!topic.querySelector("[data-mark]")) return false;
+          if (!topic.querySelector("[data-done-flag]")) return false;
+        }
+      }
+      return true;
+    }
+
+    if (ready()) {
+      document.documentElement.dataset.checklist = "on";
+
+      function readRaw() {
+        try {
+          return localStorage.getItem(STORAGE_KEY);
+        } catch {
+          return null;
+        }
+      }
+
+      function writeStore(value) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+        } catch {
+          /* Private mode can block storage. The mark still shows for this visit. */
+        }
+      }
+
+      let store = parseStore(readRaw());
+
+      function apply(next) {
+        store = next;
+        for (const list of lists) {
+          const role = list.dataset.roleList;
+          const topics = [...list.querySelectorAll("[data-topic]")];
+          const ids = topics.map((topic) => topic.dataset.topic);
+          const marks = new Set(store.done[role] ?? []);
+          for (const topic of topics) {
+            const done = marks.has(topic.dataset.topic);
+            const flag = topic.querySelector("[data-done-flag]");
+            flag.hidden = !done;
+            const button = topic.querySelector("[data-mark]");
+            button.textContent = done ? button.dataset.labelDone : button.dataset.labelOpen;
+          }
+          list.querySelector("[data-done-line]").classList.toggle("is-shown", isComplete(store, role, ids));
+          list.classList.toggle("is-shown", store.role === role);
+        }
+        picker.classList.toggle("is-shown", store.role === null);
+      }
+
+      for (const button of choosers) {
+        button.addEventListener("click", () => {
+          const next = chooseRole(store, button.dataset.chooseRole);
+          writeStore(next);
+          apply(next);
+        });
+      }
+
+      for (const list of lists) {
+        list.querySelector("[data-role-switch]").addEventListener("click", () => {
+          const next = clearRole(store);
+          writeStore(next);
+          apply(next);
+        });
+        for (const button of list.querySelectorAll("[data-mark]")) {
+          button.addEventListener("click", () => {
+            const role = list.dataset.roleList;
+            const topic = button.closest("[data-topic]").dataset.topic;
+            const done = (store.done[role] ?? []).includes(topic);
+            const next = done ? markUndone(store, role, topic) : markDone(store, role, topic);
+            writeStore(next);
+            apply(next);
+          });
+        }
+      }
+
+      apply(store);
+    }
+  </script>
 </Base>

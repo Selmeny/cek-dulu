@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
   STORAGE_KEY,
@@ -11,6 +11,7 @@ import {
 } from "../src/lib/checklist.mjs";
 
 const dist = new URL("../dist/", import.meta.url);
+const repo = new URL("../", import.meta.url);
 
 function read(relativePath) {
   return readFileSync(new URL(relativePath, dist), "utf8");
@@ -70,116 +71,132 @@ function checkStore() {
 
 checkStore();
 
-const titles = [
-  "Ada yang minta kode WhatsApp",
-  "Nomor baru mengaku keluarga",
-  "Link hadiah, paket, atau tagihan",
-  "Transfer, QRIS, atau investasi yang mendesak",
-  "Belanja online yang aneh",
-  "Kamu simpan data orang lain",
-  "Kata sandi akun penting",
-  "Akun sekolah dan yang orang lain lihat",
-];
+const BASELINE = "Ini daftar minimum yang perlu kamu lakukan untuk jaga diri. Ini bukan jaminan aman dari semua serangan.";
+const DONE = "Kamu selesai untuk peran ini.";
+const SCRIPT_NOTE = 'Tanda "Sudah" butuh skrip. Kamu tetap bisa baca setiap daftar.';
 
-const checks = [
-  "Saya tidak kasih kode WhatsApp ke siapa pun.",
-  "Saya hubungi nomor lama dulu, sebelum percaya nomor baru yang mengaku keluarga.",
-  "Saya buka aplikasi resmi sendiri, bukan dari link di chat.",
-  "Saya cek nama penerima di aplikasi resmi sebelum transfer yang terasa terburu.",
-  "Saya bayar belanja online di dalam aplikasi belanja kalau barangnya ada di sana.",
-  "Saya tidak minta foto KTP atau PIN di chat.",
-  "Kata sandi akun penting saya panjang dan berbeda. Saya tidak menggantinya cuma karena jadwal.",
-  "Akun media sosial saya tidak terbuka untuk semua orang, dan yang bisa mengambilnya cuma saya.",
-];
+function quoted(block, key, file) {
+  const match = block.match(new RegExp(`^${key}: "(.*)"$`, "m"));
+  if (!match) fail(`Missing ${key} in ${file}`);
+  return match ? match[1] : "";
+}
 
-const headings = [
-  "Lakukan ini sekarang",
-  "Kenapa ini bahaya",
-  "Kalau sudah terlanjur",
-  "Dari mana saran ini",
-];
+function yamlList(block, key, file) {
+  const match = block.match(new RegExp(`^${key}:\\n((?:  - .*(?:\\n|$))*)`, "m"));
+  if (!match) fail(`Missing ${key} in ${file}`);
+  const lines = [];
+  for (const line of (match ? match[1] : "").split("\n")) {
+    const item = line.match(/^  - "(.*)"$/);
+    if (item) lines.push(item[1]);
+  }
+  return lines;
+}
+
+function loadTopics() {
+  const dir = new URL("src/content/situations/", repo);
+  const topics = [];
+  for (const name of readdirSync(dir)) {
+    if (!name.endsWith(".md")) continue;
+    const text = readFileSync(new URL(name, dir), "utf8");
+    const fm = text.match(/^---\n([\s\S]*?)\n---/)[1];
+    const roleBlock = fm.match(/^roles:\n((?:  - .*\n)*)/m);
+    const roles = [];
+    for (const line of roleBlock[1].split("\n")) {
+      const item = line.match(/^  - (\w+)$/);
+      if (item) roles.push(item[1]);
+    }
+    topics.push({
+      id: name.replace(/\.md$/, ""),
+      order: Number(fm.match(/^order: (\d+)$/m)[1]),
+      roles,
+      title: quoted(fm, "title", name),
+      lead: quoted(fm, "lead", name),
+      why: quoted(fm, "why", name),
+      law: quoted(fm, "law", name),
+      check: quoted(fm, "check", name),
+      action: yamlList(fm, "action", name),
+      already: yamlList(fm, "already", name),
+      labels: [...fm.matchAll(/^  - label: "(.*)"$/gm)].map((match) => match[1]),
+    });
+  }
+  return topics.sort((a, b) => a.order - b.order);
+}
+
+const topics = loadTopics();
+const roleIds = ["ponsel", "uang", "penjual", "pelajar", "ortu"];
+const roleSrc = readFileSync(new URL("src/data/roles.ts", repo), "utf8");
+const roleTitles = [...roleSrc.matchAll(/title: "([^"]+)"/g)].map((match) => match[1]);
 
 const home = read("index.html");
-const homeLines = [
-  "Pilih satu. Setiap halaman cuma untuk satu hal.",
-  "Pilih yang lagi terjadi. Lakukan satu hal.",
-  "Siapkan ini sebelum ada masalah. Lakukan satu hal.",
-  "Delapan pertanyaan. Hasilnya cuma yang belum kamu lakukan.",
-  "Pilih kegiatan kamu hari ini. Halaman itu yang cocok untuk kamu.",
-];
-for (const line of homeLines) {
-  if (!home.includes(line)) fail(`Home is missing: ${line}`);
+const body = home.slice(home.indexOf("<body"));
+const baselineCount = body.split(BASELINE).length - 1;
+if (baselineCount < 11) fail(`Baseline sentence appears ${baselineCount} times in the body.`);
+if (!body.includes(DONE)) fail("Home is missing the done sentence.");
+if (!body.includes(SCRIPT_NOTE)) fail("Home is missing the script note.");
+if (!body.includes("Sudah") || !body.includes('data-label-done="Belum"')) fail("Home is missing Sudah and Belum.");
+if (!body.includes("Ganti peran")) fail("Home is missing Ganti peran.");
+for (const title of roleTitles) {
+  if (!body.includes(title)) fail(`Home is missing role: ${title}`);
 }
-for (const title of titles) {
-  if (home.includes(title)) fail(`Home still lists a situation: ${title}`);
+for (const topic of topics) {
+  if (body.includes(topic.check)) fail(`Home shows a short-check question: ${topic.title}`);
 }
-for (const role of ["Pemakai ponsel", "Pelajar atau mahasiswa", "Orang tua"]) {
-  if (home.includes(role)) fail(`Home still lists a role: ${role}`);
+for (const path of ["/cek-dulu/sedang-terjadi/", "/cek-dulu/lakukan-sekali/", "/cek-dulu/cek/", "/cek-dulu/peran/", "/cek-dulu/situasi/"]) {
+  if (body.includes(path)) fail(`Home still links to ${path}`);
 }
+if (body.includes('id="wa-share"')) fail("Home still has a WhatsApp share link.");
 
-const happening = titles.slice(0, 5);
-const once = titles.slice(5);
-const happeningPage = read("sedang-terjadi/index.html");
-for (const title of happening) {
-  if (!happeningPage.includes(title)) fail(`Happening page is missing: ${title}`);
-}
-for (const title of once) {
-  if (happeningPage.includes(title)) fail(`Happening page lists a setup item: ${title}`);
-}
-
-const oncePage = read("lakukan-sekali/index.html");
-for (const title of once) {
-  if (!oncePage.includes(title)) fail(`Setup page is missing: ${title}`);
-}
-for (const title of happening) {
-  if (oncePage.includes(title)) fail(`Setup page lists an event: ${title}`);
-}
-
-const rolesPage = read("peran/index.html");
-for (const role of [
-  "Pemakai ponsel",
-  "Kamu pegang uang digital",
-  "Kamu jual atau simpan data orang",
-  "Pelajar atau mahasiswa",
-  "Orang tua",
-]) {
-  if (!rolesPage.includes(role)) fail(`Role index is missing: ${role}`);
-}
-
-const cek = read("cek/index.html");
-for (const line of checks) {
-  if (!cek.includes(line)) fail(`Check is missing: ${line}`);
-}
-if (cek.includes("fetch(")) fail("Check page asks the network.");
-
-const situationIds = [
-  "kode-whatsapp",
-  "nomor-keluarga",
-  "tautan-hadiah",
-  "transfer-mendesak",
-  "belanja-daring",
-  "data-orang-lain",
-  "kata-sandi",
-  "jejak-akun",
-];
-
-for (const id of situationIds) {
-  const html = read(`situasi/${id}/index.html`);
-  for (const heading of headings) {
-    if (!html.includes(heading)) fail(`${id} is missing heading: ${heading}`);
+function roleHtml(id) {
+  const start = body.indexOf(`data-role-list="${id}"`);
+  if (start < 0) {
+    fail(`Missing role list ${id}`);
+    return "";
   }
-  if (!html.includes("Halaman ini bagian dari")) fail(`${id} does not name its function.`);
-  const functionPath = happening.includes(titles[situationIds.indexOf(id)])
-    ? "/cek-dulu/sedang-terjadi/"
-    : "/cek-dulu/lakukan-sekali/";
-  if (!html.includes(functionPath)) fail(`${id} does not link to ${functionPath}`);
-  if (!html.includes('id="wa-share"')) fail(`${id} has no WhatsApp share link.`);
-  if (!html.includes("https://")) fail(`${id} has no https link.`);
+  const next = body.indexOf("data-role-list=", start + 20);
+  return body.slice(start, next === -1 ? body.length : next);
 }
 
-for (const id of ["ponsel", "uang", "penjual", "pelajar", "ortu"]) {
-  read(`peran/${id}/index.html`);
+for (const id of roleIds) {
+  const section = roleHtml(id);
+  const mine = topics.filter((topic) => topic.roles.includes(id));
+  let cursor = 0;
+  for (let index = 0; index < mine.length; index += 1) {
+    const topic = mine[index];
+    const at = section.indexOf(topic.title, cursor);
+    if (at < 0) {
+      fail(`${id} is missing ${topic.title}`);
+      continue;
+    }
+    const nextTitle = mine[index + 1] ? section.indexOf(mine[index + 1].title, at + topic.title.length) : section.length;
+    const chunk = section.slice(at, nextTitle === -1 ? section.length : nextTitle);
+    cursor = at + topic.title.length;
+    if (!chunk.includes(topic.lead)) fail(`${id} ${topic.id} is missing its lead`);
+    if (!chunk.includes("Lakukan ini sekarang")) fail(`${id} ${topic.id} is missing the action heading`);
+    for (const step of topic.action) {
+      if (!chunk.includes(step)) fail(`${id} ${topic.id} is missing an action step`);
+    }
+    if (!chunk.includes(topic.why)) fail(`${id} ${topic.id} is missing why`);
+    if (!chunk.includes(topic.law)) fail(`${id} ${topic.id} is missing law`);
+    if (!chunk.includes("Kalau sudah terlanjur")) fail(`${id} ${topic.id} is missing the report heading`);
+    for (const step of topic.already) {
+      if (!chunk.includes(step)) fail(`${id} ${topic.id} is missing an already step`);
+    }
+    for (const label of topic.labels) {
+      if (!chunk.includes(label)) fail(`${id} ${topic.id} is missing report label ${label}`);
+    }
+  }
+  if (!section.includes("Ganti peran")) fail(`${id} is missing Ganti peran`);
+  if (!section.includes(DONE)) fail(`${id} is missing the done sentence`);
+  if (section.split(BASELINE).length - 1 < 2) fail(`${id} is missing the baseline sentence`);
 }
+
+for (const dir of ["sedang-terjadi", "lakukan-sekali", "cek", "peran", "situasi"]) {
+  if (existsSync(new URL(dir, dist))) fail(`${dir} is still built`);
+}
+
+const missing = read("404.html");
+if (!missing.includes("Halaman ini tidak ketemu")) fail("Missing page text is gone.");
+if (!missing.includes("/cek-dulu/")) fail("Missing page does not link home.");
 
 const sources = read("sumber/index.html");
 for (const host of [
@@ -194,16 +211,14 @@ for (const host of [
 }
 
 const sitemap = read("sitemap.xml");
-for (const path of [
-  "/cek-dulu/",
-  "/cek-dulu/sedang-terjadi/",
-  "/cek-dulu/lakukan-sekali/",
-  "/cek-dulu/cek/",
-  "/cek-dulu/peran/",
-  "/cek-dulu/tentang/",
-  "/cek-dulu/sumber/",
-]) {
-  if (!sitemap.includes(`https://selmeny.github.io${path}`)) fail(`Sitemap is missing ${path}`);
+const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+const expectedLocs = [
+  "https://selmeny.github.io/cek-dulu/",
+  "https://selmeny.github.io/cek-dulu/tentang/",
+  "https://selmeny.github.io/cek-dulu/sumber/",
+];
+if (locs.length !== 3 || expectedLocs.some((url) => !locs.includes(url))) {
+  fail(`Sitemap URLs are ${locs.join(", ")}`);
 }
 
 const files = walk("./");
@@ -227,14 +242,10 @@ if (!oneColumn || !fourColumns || !wideGrid || !readingMeasure) {
     `Adaptive grid or the 40rem reading measure is missing. one=${oneColumn} four=${fourColumns} wide=${wideGrid} measure=${readingMeasure}`,
   );
 }
-if (!css.includes("Plus Jakarta Sans") || !css.includes("Fraunces")) {
-  fail("Font pairing is missing.");
-}
+if (!css.includes("Plus Jakarta Sans") || !css.includes("Fraunces")) fail("Font pairing is missing.");
 if (!css.includes(".woff2")) fail("Fonts are not self-hosted.");
 if (bundled.includes("IBM Plex")) fail("IBM Plex is not part of this pairing.");
+if (!css.includes("html[data-checklist]")) fail("Checklist visibility CSS is missing.");
 
-if (process.exitCode) {
-  process.exit(process.exitCode);
-}
-
-console.log(`Checked ${situationIds.length} situations, 4 functions, 5 roles, the short check, and the source page.`);
+if (process.exitCode) process.exit(process.exitCode);
+console.log("Checked 5 role checklists, the source page, and the store.");
