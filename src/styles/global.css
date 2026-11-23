@@ -824,3 +824,47 @@ fieldset {
     transform: none;
   }
 }
+
+button.role-card {
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+html[data-checklist] [data-role-picker],
+html[data-checklist] [data-role-list] {
+  display: none;
+}
+
+html[data-checklist] [data-role-picker].is-shown,
+html[data-checklist] [data-role-list].is-shown {
+  display: block;
+}
+
+.done-line {
+  display: none;
+}
+
+html[data-checklist] .done-line.is-shown {
+  display: block;
+}
+
+details[data-topic] {
+  margin: 0.75rem 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+}
+
+details[data-topic] summary {
+  cursor: pointer;
+  font-weight: 750;
+}
+
+[data-mark],
+[data-role-switch] {
+  min-height: 44px;
+  margin-top: 0.75rem;
+}

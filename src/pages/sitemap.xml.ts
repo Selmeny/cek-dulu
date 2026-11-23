@@ -1,19 +1,8 @@
 import type { APIRoute } from "astro";
-import { doors } from "../data/functions";
-import { roles } from "../data/roles";
 import { href } from "../lib/href";
-import { loadSituations } from "../lib/situations";
 
 export const GET: APIRoute = async () => {
-  const situations = await loadSituations();
-  const paths = [
-    "/",
-    "/tentang",
-    "/sumber",
-    ...doors.map((door) => door.href),
-    ...situations.map((item) => `/situasi/${item.id}`),
-    ...roles.map((role) => `/peran/${role.id}`),
-  ];
+  const paths = ["/", "/tentang", "/sumber"];
   const origin = import.meta.env.SITE ?? "https://selmeny.github.io";
   const urls = paths
     .map((path) => {
