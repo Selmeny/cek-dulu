@@ -223,6 +223,17 @@ if (locs.length !== 3 || expectedLocs.some((url) => !locs.includes(url))) {
 
 const files = walk("./");
 const bundled = [home, ...files.map((file) => read(file))].join("\n");
+const tentang = read("tentang/index.html");
+if (!tentang.includes(BASELINE)) fail("Tentang is missing the baseline sentence.");
+for (const oldLine of ["Sedang terjadi", "Lakukan sekali", "Cek singkat", "Menurut peran"]) {
+  if (tentang.includes(oldLine)) fail(`Tentang still explains ${oldLine}.`);
+}
+const readme = readFileSync(new URL("README.md", repo), "utf8");
+if (!readme.includes("minimum baseline")) fail("README does not call the list a minimum baseline.");
+if (readme.includes("short check")) fail("README still describes the short check.");
+const agents = readFileSync(new URL("AGENTS.md", repo), "utf8");
+if (!agents.includes("minimum baseline")) fail("AGENTS.md does not call the list a minimum baseline.");
+if (!agents.includes("Marks stay in the browser.")) fail("AGENTS.md does not keep marks on the phone.");
 if (bundled.includes("fonts.googleapis") || bundled.includes("googletagmanager") || bundled.includes("google-analytics")) {
   fail("Third-party tracker or font host is present.");
 }

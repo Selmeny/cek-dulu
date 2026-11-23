@@ -1,6 +1,6 @@
 ## Product
 
-Cek Dulu is a static Bahasa Indonesia site. Each situation page starts with one action. NIST, ISO, and Indonesian law notes stay under that action. Do not add accounts, stored forms, or third-party analytics.
+Cek Dulu is a static Bahasa Indonesia site. The home page asks the reader to pick one role and shows that role's checklist. The checklist is the minimum baseline for the role. It is not a guarantee against every attack. Each open item starts with the action. NIST, ISO, and Indonesian law notes stay under that action. Marks stay in the browser. Do not add accounts, stored forms, or third-party analytics.
 
 ## Development
 
