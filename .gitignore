@@ -1,5 +1,8 @@
 # build output
 dist/
+
+# local worktrees
+.worktrees/
 # generated types
 .astro/
 
