@@ -1,8 +1,8 @@
 # Cek Dulu
 
-Static site in Bahasa Indonesia. A person who is not an IT worker opens one daily event and does one safer action.
+Static site in Bahasa Indonesia. A person who is not an IT worker picks one role and marks the minimum baseline for that role.
 
-The home page asks the reader to choose one function. Each function page has one objective. A short check can be forwarded. Answers stay in the browser.
+The list is not a guarantee against every attack. Marks stay in the browser.
 
 ## Commands
 
@@ -12,7 +12,7 @@ npm run dev
 npm run check
 ```
 
-`npm run check` builds the site and checks the pages, the source links, and the short check.
+`npm run check` builds the site and checks the role checklists, the source links, and the store rules.
 
 ## Publish
 
