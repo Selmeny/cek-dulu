@@ -886,27 +886,21 @@ button.mark {
 .mark-box {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 2px solid var(--green);
-  border-radius: 0.5rem;
-  background: var(--card);
-  color: transparent;
+  border-radius: 0.25rem;
+  background: #fff;
 }
 
-button.mark[aria-checked="true"] .mark-box {
-  background: var(--green);
-  color: #fff;
-}
-
-button.mark .mark-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  display: none;
-}
-
-button.mark[aria-checked="true"] .mark-icon {
-  display: block;
+button.mark[aria-checked="true"] .mark-box::after {
+  content: "";
+  width: 0.35rem;
+  height: 0.7rem;
+  margin-top: -0.15rem;
+  border: solid var(--green);
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
 }
 
 [data-role-switch] {
