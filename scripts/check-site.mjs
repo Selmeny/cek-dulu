@@ -133,7 +133,7 @@ const baselineCount = body.split(BASELINE).length - 1;
 if (baselineCount < 11) fail(`Baseline sentence appears ${baselineCount} times in the body.`);
 if (!body.includes(DONE)) fail("Home is missing the done sentence.");
 if (!body.includes(SCRIPT_NOTE)) fail("Home is missing the script note.");
-if (!body.includes('role="checkbox"') || !body.includes("Sudah kamu lakukan:")) {
+if (!body.includes('role="checkbox"') || !body.includes("Saya mengerti")) {
   fail("Home is missing the checklist mark.");
 }
 if (body.includes('data-label-done="Belum"') || body.includes(">Sudah</button>")) {
