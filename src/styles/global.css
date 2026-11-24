@@ -852,8 +852,7 @@ html[data-checklist] .done-line.is-shown {
   display: block;
 }
 
-[data-topic] {
-  position: relative;
+details[data-topic] {
   margin: 0.75rem 0;
   background: var(--card);
   border: 1px solid var(--line);
@@ -861,55 +860,17 @@ html[data-checklist] .done-line.is-shown {
   padding: 0.9rem 1rem;
 }
 
-[data-topic] summary {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  min-height: 2.75rem;
+details[data-topic] summary {
   cursor: pointer;
   font-weight: 750;
-  list-style: none;
-}
-
-[data-topic] summary::-webkit-details-marker {
-  display: none;
-}
-
-[data-topic] summary::marker {
-  content: none;
-}
-
-[data-topic] summary::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: rotate(-45deg);
-  flex: 0 0 auto;
-}
-
-[data-topic] details[open] > summary::before {
-  transform: rotate(45deg);
-}
-
-[data-topic] .mark-space {
-  flex: 0 0 2.75rem;
-  width: 2.75rem;
-  height: 2.75rem;
 }
 
 button.mark {
-  position: absolute;
-  z-index: 1;
-  top: 0.9rem;
-  /* Card padding, chevron, and the summary gap. This keeps the box on the spacer. */
-  left: calc(1rem + 0.5rem + 2px + 0.7rem);
   width: 2.75rem;
   height: 2.75rem;
   min-width: 2.75rem;
   min-height: 2.75rem;
-  margin: 0;
+  margin: 0.75rem 0 0;
   padding: 0;
   border: 2px solid var(--green);
   border-radius: 0.5rem;

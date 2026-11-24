@@ -24,7 +24,31 @@ const { item } = Astro.props;
 const { title, lead, action, why, law, already, report } = item.data;
 ---
 
-<div class="topic" data-topic={item.id}>
+<details data-topic={item.id}>
+  <summary>
+    <span>{title}</span>
+  </summary>
+  <p>{lead}</p>
+  <h3>Lakukan ini sekarang</h3>
+  <ul>
+    {action.map((step) => <li>{step}</li>)}
+  </ul>
+  <p>{why}</p>
+  <p>{law}</p>
+  <h3>Kalau sudah terlanjur</h3>
+  <ul>
+    {already.map((step) => <li>{step}</li>)}
+  </ul>
+  <ul>
+    {
+      report.map((entry) => (
+        <li>
+          {entry.href ? <a href={entry.href}>{entry.label}</a> : <strong>{entry.label}</strong>}
+          <span>{entry.note}</span>
+        </li>
+      ))
+    }
+  </ul>
   <button
     type="button"
     class="mark"
@@ -43,31 +67,4 @@ const { title, lead, action, why, law, already, report } = item.data;
         stroke-linejoin="round"></path>
     </svg>
   </button>
-  <details>
-    <summary>
-      <span class="mark-space" aria-hidden="true"></span>
-      <span>{title}</span>
-    </summary>
-    <p>{lead}</p>
-    <h3>Lakukan ini sekarang</h3>
-    <ul>
-      {action.map((step) => <li>{step}</li>)}
-    </ul>
-    <p>{why}</p>
-    <p>{law}</p>
-    <h3>Kalau sudah terlanjur</h3>
-    <ul>
-      {already.map((step) => <li>{step}</li>)}
-    </ul>
-    <ul>
-      {
-        report.map((entry) => (
-          <li>
-            {entry.href ? <a href={entry.href}>{entry.label}</a> : <strong>{entry.label}</strong>}
-            <span>{entry.note}</span>
-          </li>
-        ))
-      }
-    </ul>
-  </details>
-</div>
+</details>
