@@ -73,7 +73,7 @@ checkStore();
 
 const BASELINE = "Ini daftar minimum yang perlu kamu lakukan untuk jaga diri. Ini bukan jaminan aman dari semua serangan.";
 const DONE = "Kamu selesai untuk peran ini.";
-const SCRIPT_NOTE = 'Tanda "Sudah" butuh skrip. Kamu tetap bisa baca setiap daftar.';
+const SCRIPT_NOTE = "Tanda centang butuh skrip. Kamu tetap bisa baca setiap daftar.";
 
 function quoted(block, key, file) {
   const match = block.match(new RegExp(`^${key}: "(.*)"$`, "m"));
@@ -133,7 +133,12 @@ const baselineCount = body.split(BASELINE).length - 1;
 if (baselineCount < 11) fail(`Baseline sentence appears ${baselineCount} times in the body.`);
 if (!body.includes(DONE)) fail("Home is missing the done sentence.");
 if (!body.includes(SCRIPT_NOTE)) fail("Home is missing the script note.");
-if (!body.includes("Sudah") || !body.includes('data-label-done="Belum"')) fail("Home is missing Sudah and Belum.");
+if (!body.includes('role="checkbox"') || !body.includes("Sudah kamu lakukan:")) {
+  fail("Home is missing the checklist mark.");
+}
+if (body.includes('data-label-done="Belum"') || body.includes(">Sudah</button>")) {
+  fail("Home still has the Sudah or Belum button.");
+}
 if (!body.includes("Ganti peran")) fail("Home is missing Ganti peran.");
 for (const title of roleTitles) {
   if (!body.includes(title)) fail(`Home is missing role: ${title}`);

@@ -24,31 +24,50 @@ const { item } = Astro.props;
 const { title, lead, action, why, law, already, report } = item.data;
 ---
 
-<details data-topic={item.id}>
-  <summary>
-    <span>{title}</span>
-    <span data-done-flag hidden> Sudah</span>
-  </summary>
-  <p>{lead}</p>
-  <h3>Lakukan ini sekarang</h3>
-  <ul>
-    {action.map((step) => <li>{step}</li>)}
-  </ul>
-  <p>{why}</p>
-  <p>{law}</p>
-  <h3>Kalau sudah terlanjur</h3>
-  <ul>
-    {already.map((step) => <li>{step}</li>)}
-  </ul>
-  <ul>
-    {
-      report.map((entry) => (
-        <li>
-          {entry.href ? <a href={entry.href}>{entry.label}</a> : <strong>{entry.label}</strong>}
-          <span>{entry.note}</span>
-        </li>
-      ))
-    }
-  </ul>
-  <button type="button" data-mark data-label-open="Sudah" data-label-done="Belum">Sudah</button>
-</details>
+<div class="topic" data-topic={item.id}>
+  <button
+    type="button"
+    class="mark"
+    data-mark
+    role="checkbox"
+    aria-checked="false"
+    aria-label={`Sudah kamu lakukan: ${title}`}
+  >
+    <svg class="mark-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path
+        d="M5 12.5 9.5 17 19 7.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </button>
+  <details>
+    <summary>
+      <span class="mark-space" aria-hidden="true"></span>
+      <span>{title}</span>
+    </summary>
+    <p>{lead}</p>
+    <h3>Lakukan ini sekarang</h3>
+    <ul>
+      {action.map((step) => <li>{step}</li>)}
+    </ul>
+    <p>{why}</p>
+    <p>{law}</p>
+    <h3>Kalau sudah terlanjur</h3>
+    <ul>
+      {already.map((step) => <li>{step}</li>)}
+    </ul>
+    <ul>
+      {
+        report.map((entry) => (
+          <li>
+            {entry.href ? <a href={entry.href}>{entry.label}</a> : <strong>{entry.label}</strong>}
+            <span>{entry.note}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </details>
+</div>
