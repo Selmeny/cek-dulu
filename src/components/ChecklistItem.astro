@@ -49,22 +49,27 @@ const { title, lead, action, why, law, already, report } = item.data;
       ))
     }
   </ul>
-  <button
-    type="button"
-    class="mark"
-    data-mark
-    role="checkbox"
-    aria-checked="false"
-    aria-label={`Sudah kamu lakukan: ${title}`}
-  >
-    <svg class="mark-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path
-        d="M5 12.5 9.5 17 19 7.5"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.6"
-        stroke-linecap="round"
-        stroke-linejoin="round"></path>
-    </svg>
-  </button>
+  <div class="mark-row">
+    <button
+      type="button"
+      class="mark"
+      data-mark
+      role="checkbox"
+      aria-checked="false"
+      aria-label={`Saya mengerti: ${title}`}
+    >
+      <span>Saya mengerti</span>
+      <span class="mark-box" aria-hidden="true">
+        <svg class="mark-icon" viewBox="0 0 24 24" focusable="false">
+          <path
+            d="M5 12.5 9.5 17 19 7.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+    </button>
+  </div>
 </details>

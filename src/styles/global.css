@@ -865,20 +865,36 @@ details[data-topic] summary {
   font-weight: 750;
 }
 
+.mark-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.75rem 0 0;
+}
+
 button.mark {
+  width: auto;
+  min-height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  gap: 0.65rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink);
+}
+
+.mark-box {
+  display: grid;
+  place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  margin: 0.75rem 0 0;
-  padding: 0;
   border: 2px solid var(--green);
   border-radius: 0.5rem;
   background: var(--card);
   color: transparent;
 }
 
-button.mark[aria-checked="true"] {
+button.mark[aria-checked="true"] .mark-box {
   background: var(--green);
   color: #fff;
 }
@@ -887,6 +903,11 @@ button.mark .mark-icon {
   width: 1.25rem;
   height: 1.25rem;
   display: block;
+  opacity: 0;
+}
+
+button.mark[aria-checked="true"] .mark-icon {
+  opacity: 1;
 }
 
 [data-role-switch] {
