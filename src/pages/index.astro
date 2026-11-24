@@ -44,7 +44,7 @@ const doneLine = "Kamu selesai untuk peran ini.";
       ))
     }
     <noscript>
-      <p>Tanda "Sudah" butuh skrip. Kamu tetap bisa baca setiap daftar.</p>
+      <p>Tanda centang butuh skrip. Kamu tetap bisa baca setiap daftar.</p>
     </noscript>
   </div>
   <script>
@@ -72,7 +72,6 @@ const doneLine = "Kamu selesai untuk peran ini.";
         if (!list.querySelector("[data-done-line]")) return false;
         for (const topic of topics) {
           if (!topic.querySelector("[data-mark]")) return false;
-          if (!topic.querySelector("[data-done-flag]")) return false;
         }
       }
       return true;
@@ -108,10 +107,8 @@ const doneLine = "Kamu selesai untuk peran ini.";
           const marks = new Set(store.done[role] ?? []);
           for (const topic of topics) {
             const done = marks.has(topic.dataset.topic);
-            const flag = topic.querySelector("[data-done-flag]");
-            flag.hidden = !done;
             const button = topic.querySelector("[data-mark]");
-            button.textContent = done ? button.dataset.labelDone : button.dataset.labelOpen;
+            button.setAttribute("aria-checked", done ? "true" : "false");
           }
           list.querySelector("[data-done-line]").classList.toggle("is-shown", isComplete(store, role, ids));
           list.classList.toggle("is-shown", store.role === role);
